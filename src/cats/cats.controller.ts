@@ -1,32 +1,19 @@
-import { Controller, Get, Post, HttpCode, Param } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { CreateCatDto } from '../dto/create-cat.dto';
+import { CatsService } from '../cats/cats.service';
+import { Cat } from '../interfaces/cat.interface';
 
 @Controller('cats')
 export class CatsController {
-  @Get()
-  findAll(): string {
-    return 'This action return all cats';
-  }
-
-  // @Get('ab_cd')
-  // findBy(): string {
-  //   return 'This action return ab_cd';
-  // }
-
-  // @Get('ab_cd')
-  // @Redirect('https://twitter.com/shigeek_', 301)
-  // findBy(): string {
-  //   return 'This action return ab_cd';
-  // }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `This action returns a #${id} cat`;
-  }
+  constructor(private catsService: CatsService) {}
 
   @Post()
-  @HttpCode(204)
-  create() {
-    return 'This action adds a new cat';
+  async create(@Body() createCatDto: CreateCatDto) {
+    this.catsService.create(createCatDto);
+  }
+
+  @Get()
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
   }
 }
